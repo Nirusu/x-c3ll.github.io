@@ -54,18 +54,19 @@ mothra@kaiju:~/holydays|⇒  ldd $(locate PwnAdventure3-Linux-Shipping)
 
 import frida
 import cxxfilt
+from __future__ import print_function
 
 
 session = frida.attach("PwnAdventure3-Linux-Shipping")
 script = session.create_script("""
     var exports = Module.enumerateExportsSync("libGameLogic.so");
-    for (i = 0; i < exports.length; i++) {
+    for (var i = 0; i < exports.length; i++) {
         send(exports[i].name);
     }
-        """);
+""")
 
 def on_message(message, data):
-    print message["payload"] + " - " + cxxfilt.demangle(message["payload"])
+    print(message["payload"] + " - " + cxxfilt.demangle(message["payload"]))
 
 script.on('message', on_message)
 script.load()
